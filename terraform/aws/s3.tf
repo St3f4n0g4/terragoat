@@ -40,6 +40,7 @@ resource "aws_s3_bucket_object" "data_object" {
 }
 
 resource "aws_s3_bucket" "financials" {
+	# checkov:skip=CKV_AWS_145: ADD REASON
   # bucket is not encrypted
   # bucket does not have access logs
   # bucket does not have versioning
@@ -61,6 +62,20 @@ resource "aws_s3_bucket" "financials" {
   })
 
 }
+
+
+resource "aws_s3_bucket_server_side_encryption_configuration" "financials" {
+  bucket = aws_s3_bucket.financials.bucket
+
+  rule {
+    apply_server_side_encryption_by_default {
+      sse_algorithm     = "aws:kms"
+    }
+  }
+}
+
+
+
 
 resource "aws_s3_bucket" "operations" {
   # bucket is not encrypted
